@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChrisTube - Ad-Free YouTube Player</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1 class="logo">ChrisTube</h1>
+            <p class="tagline">Watch YouTube videos without ads</p>
+        </header>
+
+        <main class="main-content">
+            <div class="input-section">
+                <div class="input-container">
+                    <input 
+                        type="text" 
+                        id="videoUrl" 
+                        placeholder="Paste YouTube video URL here..."
+                        class="url-input"
+                    >
+                    <button id="loadVideo" class="load-btn">Watch</button>
+                </div>
+                <p class="help-text">
+                    Supports: youtube.com/watch?v=... and youtu.be/... URLs
+                </p>
+            </div>
+
+            <div class="player-section">
+                <div id="playerContainer" class="player-container">
+                    <div class="placeholder">
+                        <div class="placeholder-icon">▶</div>
+                        <p>Enter a YouTube URL above to start watching</p>
+                    </div>
+                </div>
+                <div id="videoInfo" class="video-info hidden">
+                    <h3 id="videoTitle" class="video-title"></h3>
+                    <p id="videoDescription" class="video-description"></p>
+                </div>
+            </div>
+
+            <div id="errorMessage" class="error-message hidden"></div>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2024 ChrisTube - Open Source Ad-Free YouTube Player</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
