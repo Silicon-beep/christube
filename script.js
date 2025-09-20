@@ -118,12 +118,11 @@ class ChrisTube {
 
     waitForYouTubeAPI() {
         return new Promise((resolve) => {
-            if (this.isPlayerReady && window.YT) {
+            if (this.isPlayerReady) {
                 resolve();
             } else {
                 const checkAPI = () => {
-                    if (window.YT && window.YT.Player) {
-                        this.isPlayerReady = true;
+                    if (this.isPlayerReady) {
                         resolve();
                     } else {
                         setTimeout(checkAPI, 100);
@@ -195,6 +194,8 @@ class ChrisTube {
     createFallbackPlayer(videoId) {
         const playerContainer = document.getElementById('playerContainer');
         
+        console.log('Creating fallback player for video:', videoId);
+        
         // Create direct iframe embed as fallback
         const iframe = document.createElement('iframe');
         iframe.id = 'player';
@@ -205,8 +206,11 @@ class ChrisTube {
         iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
         iframe.allowFullscreen = true;
         
+        let loaded = false;
+        
         iframe.onload = () => {
-            console.log('Fallback player loaded');
+            console.log('Fallback player loaded successfully');
+            loaded = true;
             this.hideLoading();
             this.updateVideoInfo({
                 title: 'YouTube Video',
@@ -215,14 +219,16 @@ class ChrisTube {
             });
         };
 
-        iframe.onerror = () => {
-            console.error('Fallback player failed to load');
-            this.showError('Unable to load video. This may be due to network restrictions or the video being unavailable.');
-            this.hideLoading();
-        };
-
         playerContainer.innerHTML = '';
         playerContainer.appendChild(iframe);
+        
+        // Timeout fallback in case iframe doesn't load or is blocked
+        setTimeout(() => {
+            if (!loaded) {
+                console.log('Iframe timeout or blocked, showing direct link fallback');
+                this.showDirectLinkFallback(videoId);
+            }
+        }, 5000);
     }
 
     updateVideoInfoFromPlayer() {
@@ -285,6 +291,28 @@ class ChrisTube {
 
     hideLoading() {
         // Loading will be hidden when player loads or error occurs
+    }
+
+    showDirectLinkFallback(videoId) {
+        const playerContainer = document.getElementById('playerContainer');
+        playerContainer.innerHTML = `
+            <div class="fallback-container">
+                <div class="fallback-icon">🎬</div>
+                <h3>Direct Video Access</h3>
+                <p>Due to network restrictions, the video cannot be embedded here.</p>
+                <div class="fallback-links">
+                    <a href="https://www.youtube.com/watch?v=${videoId}" target="_blank" class="youtube-link">
+                        <span>📺</span> Watch on YouTube
+                    </a>
+                    <a href="https://youtu.be/${videoId}" target="_blank" class="youtube-link">
+                        <span>🔗</span> Short Link
+                    </a>
+                </div>
+                <p class="fallback-note">
+                    <strong>Tip:</strong> For the best ad-free experience, consider using browser extensions like uBlock Origin.
+                </p>
+            </div>
+        `;
     }
 
     showError(message) {
